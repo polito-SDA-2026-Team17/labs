@@ -5,6 +5,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pymongo import MongoClient
 from dotenv import load_dotenv
+from bson import ObjectId
 
 load_dotenv()
 
@@ -27,7 +28,7 @@ def resolve_emails(references):
     for ref in references:
         if ref.get("relationTo") == "users":
             user_id = ref.get("value")
-            user = users.find_one({"_id": user_id})
+            user = users.find_one({"_id": ObjectId(user_id)}) # Assuming user_id is stored as a string in the document, we convert it to ObjectId for querying
             if user and "email" in user:
                 emails.append(user["email"])
     return emails
@@ -64,7 +65,7 @@ def serialize_ast(nodes):
             url = node.get("url", "#")
             html += f'<a href="{url}">{children_html}</a>'
         else:
-            html += children_html
+            html += f"<p>{children_html}</p>" # Default to paragraph for unknown types
             
     return html
 
