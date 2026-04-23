@@ -6,7 +6,7 @@ services:
     volumes:
       - mzinga_data:/app/${TENANT:-local}
     depends_on:
-      - database
+#      - database
       - messagebus
       - cache
     environment:
@@ -36,34 +36,34 @@ services:
         delay: 5s
         max_attempts: 3
         window: 120s
-  database:
-    image: percona/percona-server-mongodb:8.0.20-8
-    ports:
-      - ${MONGO_PORT:-27017}:27017
-    volumes:
-      - mongodb_data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOTUSER:-admin}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOTPASSWORD:-admin}
-    command:
-      [
-        "--bind_ip_all",
-        "--storageEngine",
-        "wiredTiger",
-      ]
-    deploy:
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        max_attempts: 3
-        window: 120s
-    healthcheck:
-      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'$MONGO_HOST:${MONGO_PORT:-27017}'}]}) }" | mongosh -u ${MONGO_ROOTUSER:-admin} -p ${MONGO_ROOTPASSWORD:-admin} --quiet
-      interval: 5s
-      timeout: 30s
-      start_period: 0s
-      start_interval: 1s
-      retries: 30
+#  database:
+#    image: percona/percona-server-mongodb:8.0.20-8
+#    ports:
+#      - ${MONGO_PORT:-27017}:27017
+#    volumes:
+#      - mongodb_data:/data/db
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOTUSER:-admin}
+#      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOTPASSWORD:-admin}
+#    command:
+#      [
+#        "--bind_ip_all",
+#        "--storageEngine",
+#        "wiredTiger",
+#      ]
+#    deploy:
+#      restart_policy:
+#        condition: on-failure
+#        delay: 5s
+#        max_attempts: 3
+#        window: 120s
+#    healthcheck:
+#      test: echo "try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'$MONGO_HOST:${MONGO_PORT:-27017}'}]}) }" | mongosh -u ${MONGO_ROOTUSER:-admin} -p ${MONGO_ROOTPASSWORD:-admin} --quiet
+#      interval: 5s
+#      timeout: 30s
+#      start_period: 0s
+#      start_interval: 1s
+#      retries: 30
   messagebus:
     image: rabbitmq:4.2.5-management-alpine
     hostname: rabbitmq
