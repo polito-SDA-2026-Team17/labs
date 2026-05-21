@@ -1,0 +1,7 @@
+requests
+python-dotenv 
+structlog
+opentelemetry-sdk
+opentelemetry-exporter-otlp-proto-http
+opentelemetry-instrumentation-requests
+opentelemetry-exporter-prometheus

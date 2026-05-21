@@ -12,3 +12,6 @@
 
 # MZinga local clone
 #mzinga/
+
+# Python venv
+.venv

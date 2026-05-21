@@ -1,4 +1,23 @@
 services:
+  replica_key:
+    image: bash:5.3.9
+    entrypoint:
+      - bash
+      - -c
+      - |
+        apk update && apk add openssl
+        echo "Generating replica key..."
+        openssl rand -base64 756 > /data/db/custom.replica.key
+        chmod 400 /data/db/custom.replica.key
+        chown 999:999 /data/db/custom.replica.key
+        sleep 30
+        echo "Replica key generated"
+    volumes:
+      - mongodb_data:/data/db
+    deploy:
+      restart_policy:
+        condition: no
+
   mzinga:
     image: newesissrl.azurecr.io/mzinga/payload/gh/backoffice:0.9.3
     ports:
@@ -38,6 +57,8 @@ services:
         window: 120s
   database:
     image: percona/percona-server-mongodb:8.0.20-8
+    depends_on:
+      - replica_key
     ports:
       - ${MONGO_PORT:-27017}:27017
     volumes:
